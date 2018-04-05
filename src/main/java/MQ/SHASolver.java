@@ -40,6 +40,12 @@ public class SHASolver {
         }
         return null;
     }
+
+    /**
+     * Converts bytes to a string of hexadecimal
+     * @param hash Bytes to be converted
+     * @return String of hex characters
+     */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder();
         for (byte b:hash) {

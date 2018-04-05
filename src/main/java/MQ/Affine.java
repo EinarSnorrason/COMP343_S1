@@ -42,15 +42,23 @@ public class Affine {
         return ciphertext.toString();
     }
 
+
     public static String decrypt(String plaintext, int a, int b){
         return decrypt(affineKey,plaintext,a,b);
     }
+
+    /**
+     * Decrypts a message encrypted with an affine cipher when given two keys
+     */
     public static String decrypt(String alphabet,String plaintext, int a, int b){
+        // Calculate 1/a mod (lenght of alphabet)
         int inv = new BigInteger(Integer.toString(a)).modInverse(new BigInteger(Integer.toString(alphabet.length()))).intValue();
         StringBuilder ciphertext = new StringBuilder();
+        // Decrypt letter by letter
         for (int i=0;i<plaintext.length();i++){
             int letter = findPos(alphabet,plaintext.charAt(i));
             if (letter<0){
+                // If letter is not in alphabet, leave it be
                 ciphertext.append(plaintext.charAt(i));
                 continue;
             }

@@ -12,11 +12,20 @@ public class Caesar {
         System.out.println(cipherText2);
         System.out.println(cipher(cipherText2,-12));
     }
+
+    /**
+     * Encrypts given message with a key using a caesar cipher
+     * @param plaintext
+     * @param key
+     * @return Encrypted message
+     * */
     public static String cipher(String plaintext, int key){
+        // Make sure key is in the right range
         key %=26;
         if (key<0)
             key += 26;
         StringBuilder ciphertext = new StringBuilder();
+        // Shift each letter given amount
         for (int i=0;i<plaintext.length();i++){
             int letter = (int)plaintext.charAt(i)-65;
             if (letter<0||letter>25){

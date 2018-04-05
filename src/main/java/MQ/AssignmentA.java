@@ -23,9 +23,17 @@ and
             System.out.println(Affine.decrypt(affineKey,affine,i,12));
         }
     }
+
     public static String solver(String message){
         return Caesar.cipher(message,eKey(message));
     }
+
+    /**
+     * Takes in a message encrypted with a caesar cipher and returns the
+     * key needed to decrypt it
+     * @param message Encrypted message
+     * @return key
+     */
     public static int eKey(String message){
         int[] counter = new int[26];
         for (int i=0;i<message.length();i++){
@@ -33,14 +41,15 @@ and
         }
         int max = 0;
         int index = 0;
+
+        // Count what letter appears most often
         for (int i=0;i<counter.length;i++){
             if (counter[i]>max){
                 max = counter[i];
                 index=i;
             }
         }
-        System.out.println(4-index);
-        System.out.println(4-index);
+        // Return key:
         return 4-index;
     }
     static int eKey2(String message){

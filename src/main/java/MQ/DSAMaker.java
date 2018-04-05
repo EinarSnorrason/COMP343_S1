@@ -25,7 +25,7 @@ public class DSAMaker {
         // Create random integer between 0 and q
         BigInteger k = new BigInteger(q.bitLength(), new Random());
         BigInteger r = gamma.modPow(k,p).mod(q);
-        BigInteger s = (H.add(meteor_private.multiply(r))).multiply(k.modInverse(q)).mod(q);
+        BigInteger s = (H.add(a.multiply(r))).multiply(k.modInverse(q)).mod(q);
         //Print out signature:
         System.out.println("["+r+","+s+"]");
         // DSA verification:

@@ -2,7 +2,6 @@ package MQ;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Einar Snorrason on 28/03/2018.
@@ -13,55 +12,59 @@ public class AssignmentB {
     static BigInteger g = new BigInteger("9369228326851588128067094743581477709920277496836775237312108149103793859242097392461261958047072509833337328257405846155281318370339212682244570311305939741139975814626041456655019240400261932984637262924772361302181863871716170249459932972459920378181623255028507760251027411367445715256986964725673431470297353925167168809737676619089616249592749350500663292938637146739170484968986364179811205356786577287741465593479791915227167723276173488551272429777303232759545362915489475948424327174196256541530719510063649963987466857385776890108389780914858553073795431739818845921967286222345192498103117402945212914400");
     static BigInteger q = new BigInteger("105232489643835277469852304646516456431850353561758360808645843167358376593733");
     static BigInteger gamma = new BigInteger("19279110241941451951679879925338641252960480753232344467297834695570050515312632067567516022839066331094822675996175721960380441326459815329916744060341375537643611434243197925663613961537646331497541902098232623520032406451413371764355304001983047360758897424255603968173954435620746320222709831546715154372219478236934238187227127941410300903014767526661155681294517936435321523776633717099882494426381012477454016593052841890434799608204267698018538797860358452607256979563827760353637207631240262985630295172187911905471569226230001718730168180569617909420309513928584393943860088213204569225100444731631643551172");
-    static String meteor_private = ("25-37293595366446869478279--475689151309-330-360499567-1867667289983332-98313");
-    static BigInteger NINE = new BigInteger("9");
+    static String n1Incomplete = ("25437293595366446869478279--475689151309-330-360499567-1867667289983332-98313");
     public static void main(String[] args){
-        // Create first meteor private
-        int counter = 0;
+        elGamalSolver(p,g,publicKey,n1Incomplete);
+    }
+
+    /**
+     * Takes an incomplete private key to an elgamal system and prints the missing digits
+     * @param p
+     * @param g
+     * @param h1 Public key
+     * @param n1Incomplete Key we are trying to find
+     */
+    public static void elGamalSolver(BigInteger p,BigInteger g, BigInteger h1, String n1Incomplete){
+        BigInteger NINE = new BigInteger("9");
 
         StringBuilder keyBuilder = new StringBuilder();
-        ArrayList<BigInteger> origExponents = new ArrayList<>();
-        ArrayList<BigInteger> inverseExponents = new ArrayList<>();
+        // Array tracking the current value of each digit we need to find
         ArrayList<Integer> values = new ArrayList<>();
-        ArrayList<Integer> positions = new ArrayList<>();
-        for (int i=0; i<meteor_private.length();i++){
-            if (meteor_private.charAt(i)=='-'){
+        // Array containing g^(10^i)%p
+        ArrayList<BigInteger> exponents = new ArrayList<>();
+        // Array containing the inverse of (9*g^(10^(i-1)%p)%p
+        ArrayList<BigInteger> inverseExponents = new ArrayList<>();
+
+        //Create first key (all digits set to 0)
+        for (int i = 0; i< n1Incomplete.length(); i++){
+            if (n1Incomplete.charAt(i)=='-'){
                 keyBuilder.append('0');
-                positions.add(0,i);
                 values.add(0,0);
-                origExponents.add(0,new BigInteger("10").pow(meteor_private.length()-1-i));
+                // Calculate exponents
+                BigInteger exponent=BigInteger.TEN.pow(n1Incomplete.length()-1-i);
+                inverseExponents.add(g.modPow(exponent.multiply(NINE),p).modInverse(p));
+                exponents.add(g.modPow(exponent,p));
             }
             else{
-                keyBuilder.append(meteor_private.charAt(i));
+                keyBuilder.append(n1Incomplete.charAt(i));
             }
         }
-        ArrayList<BigInteger> exponents = new ArrayList<>();
-
-        // Fix the exponents:
-        exponents.add(0,g.modPow(origExponents.get(0),p));
-        //inverseExponents.add(0,g.modPow(origExponents.get(0),p));
-        for (int i=1;i<positions.size();i++){
-            BigInteger exponent = (origExponents.get(i-1).multiply(NINE));
-            inverseExponents.add(g.modPow(exponent,p).modInverse(p));
-            exponents.add(g.modPow(origExponents.get(i),p));
-        }
-
         BigInteger firstKey = new BigInteger(keyBuilder.toString());
         BigInteger value = g.modPow(firstKey,p);
-
-        long start=System.nanoTime();
-        while(!value.equals(publicKey)){
+        int counter = 0;
+        // Begin search for the right key
+        while(!value.equals(h1)){
             counter++;
             if (counter>100000000){
-                System.out.println("NOOOOOO");
+                System.out.println("Failed to find a key");
                 return;
             }
 
             // Iterate values
-            for (int i=0;i<positions.size();i++){
+            for (int i=0;i<values.size();i++){
                 if (values.get(i)==9){
                     values.set(i,0);
-                    value = value.multiply(inverseExponents.get(i));
+                    value = value.multiply(inverseExponents.get(i)).mod(p);
                 }
                 else{
                     values.set(i,values.get(i)+1);
@@ -69,22 +72,10 @@ public class AssignmentB {
                     break;
                 }
             }
-            if (counter%1000000==0){
-                System.out.println((System.nanoTime()-start)*0.000000001);
-                System.out.println(counter);
-                System.out.println(values);
-            }
-            if (counter==10000){
-                if (g.modPow(firstKey.add(origExponents.get(4)),p).equals(value)){
-                    System.out.println("All good");
-                } else{
-                    System.out.println("PANIC");
-                }
-            }
         }
+        // Once the key is found, print the missing digits from most to least significant
         System.out.println("done");
         System.out.println(counter);
-
     }
 
 }
