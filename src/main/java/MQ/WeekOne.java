@@ -8,10 +8,7 @@ import java.util.Random;
  */
 public class WeekOne {
     public static void main(String[] args){
-        for (int i=255;i<1000;i++){
-            System.out.println(i+" "+((char)i));
-        }
-        System.out.println(-30%26);
+        System.out.println(hexToAscii("8ab932e3ef257be762ecd22d852ba82b98973e836623f3576f8c7e041ca51f656406a7c3d89083d433e09486c5393792f692b884392b74448fca1ab0c977f9f657bbfaf08a36ddce40eecb5c24c59dfa9cbefd95f396b8e53a83c8e7a777c1f9bc565647508ee8535b8eda600042779f49c7ce375bdb200c0a89d22f87635b9644be27231ab7f0787a043b7c2b79e5ecf1c44d79a615d3392c51a58c57c14a49e89539648ed597b10034f9269c6a3340b930306598d2712d972f7ca1d823903a73e79055ece7d426edf7d07bec4b87cda00e72dfcb5399847056647728602fdb9be97a16b4eda9ea3eb90d8de63caa4e1f6fa1e0ccdbc8be7bea0869001948a"));
     }
 
 
